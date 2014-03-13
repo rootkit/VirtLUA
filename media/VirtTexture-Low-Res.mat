@@ -1,0 +1,2 @@
+texture0=.\VirtTexture-Low-Res.tex
+shader="Shaders/Model/diffuse.shader"

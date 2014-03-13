@@ -1,0 +1,2 @@
+Unable to load material library
+Unable to read material "Material__1" in .mtl file

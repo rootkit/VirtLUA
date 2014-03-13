@@ -1,0 +1,13 @@
+# Blender MTL File: 'swat7.blend'
+# Material Count: 1
+newmtl Material1
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.429804 0.156863 0.156863
+Ks 0.449020 0.449020 0.449020
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\Program Files\The Game Creators\DarkMATTER\Models\3DS\People\SWAT\SWAT.BMP
+
+

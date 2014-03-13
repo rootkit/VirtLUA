@@ -1,0 +1,13 @@
+# Blender MTL File: 'USA_crawl7.blend'
+# Material Count: 1
+newmtl Material__1
+Ns 29.411765
+Ka 0.000000 0.000000 0.000000
+Kd 0.429804 0.156862 0.156862
+Ks 0.059869 0.059869 0.059869
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\Program Files\The Game Creators\DarkMATTER\Models\3DS\People\USA\USA.BMP
+
+

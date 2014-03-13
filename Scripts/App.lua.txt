@@ -1,0 +1,396 @@
+local xrot = 0
+local yrot = 0
+
+local text = 200
+
+local sub = 2
+
+local numMesh_001 = 19 local numMesh_002 = 18
+local numMesh_003 = 17 local numMesh_004 = 16
+local numMesh_005 = 15 local numMesh_006 = 14
+local numMesh_007 = 13 local numMesh_008 = 12
+local numMesh_009 = 11 local numMesh_010 = 10
+local numMesh_011 = 9  local numMesh_012 = 8
+local numMesh_013 = 7  local numMesh_014 = 6
+local numMesh_015 = 5  local numMesh_016 = 4
+local numMesh_017 = 3  local numMesh_018 = 2 
+local numrun = 0
+
+local curAct = 1 local nnvirt = 17
+
+local XHERO = 924  local YHERO = 886
+local xmov = 0 local ymov = 0 local zmov = 0
+local xrot1 = 0 local yrot1 = 0 local zrot1 = 0
+
+minnFrameVirt = {}
+maxxFrameVirt = {}
+actNameVirt = {}
+models = {} 
+
+--This function will be called once when the program starts
+function App:Start()		
+	
+	--Create a window
+	self.window=Window:Create("Virt",  0,0, 1024,768 )
+	--self.window:HideMouse()
+	
+	--Create the graphics context
+	self.context=Context:Create(self.window,0)
+	if self.context==nil then return false end
+	
+	--Create a world
+	self.world=World:Create()
+	
+	--Load a font
+        self.font = Font:Load("Materials/Fonts/arial.ttf", 20)
+        self.context:SetFont(self.font)	
+	
+	--Load a map
+	local mapfile = System:GetProperty("map","Maps/start.map") --Ata
+	if Map:Load(mapfile)==false then return false end
+	
+	--Create a camera
+	self.camera = Camera:Create()
+	
+	--App:LoadObjects()
+	self.camera:Move(0, 10, -10)
+
+	xrot = 90;
+	yrot = 10;
+	zrot = 0;	
+	
+	virtxpos = {}
+	virtypos = {}
+	virtzpos = {}
+	virtwquat = {}
+	virtxquat = {}
+	virtyquat = {}
+	virtzquat = {}
+	
+	for x=0,App.world:CountEntities()-1 do
+		local model = App.world:GetEntity(x)
+                if(model:GetKeyValue("name") == "vMesh_001_root") then
+                        models[1] = model
+                end
+                if(model:GetKeyValue("name") == "vMesh_002_root") then
+                        models[2] = model
+                end
+                if(model:GetKeyValue("name") == "vMesh_003_root") then
+                        models[3] = model
+                end
+                if(model:GetKeyValue("name") == "vMesh_004_root") then
+                        models[4] = model
+                end
+                if(model:GetKeyValue("name") == "vMesh_005_root") then
+                        models[5] = model
+                end
+                if(model:GetKeyValue("name") == "vMesh_006_root") then
+                        models[6] = model
+                end
+                if(model:GetKeyValue("name") == "vMesh_007_root") then
+                        models[7] = model
+                end
+                if(model:GetKeyValue("name") == "vMesh_008_root") then
+                        models[8] = model
+                end
+                if(model:GetKeyValue("name") == "vMesh_009_root") then
+                        models[9] = model
+                end
+                if(model:GetKeyValue("name") == "vMesh_010_root") then
+                        models[10] = model
+                end
+                if(model:GetKeyValue("name") == "vMesh_011_root") then
+                        models[11] = model
+                end
+                if(model:GetKeyValue("name") == "vMesh_012_root") then
+                        models[12] = model
+                end
+                if(model:GetKeyValue("name") == "vMesh_013_root") then
+                        models[13] = model
+                end
+                if(model:GetKeyValue("name") == "vMesh_014_root") then
+                        models[14] = model
+                end
+                if(model:GetKeyValue("name") == "vMesh_015_root") then
+                        models[15] = model
+                end
+                if(model:GetKeyValue("name") == "vMesh_016_root") then
+                        models[16] = model
+                end
+                if(model:GetKeyValue("name") == "vMesh_017_root") then
+                        models[17] = model
+                end
+                if(model:GetKeyValue("name") == "vMesh_018_root") then
+                        models[18] = model
+                end
+        end
+	--App:LoadObjects()
+	App:InitAnimationVirt()
+	App:InitAnimSummaryVirt()		
+	
+
+	curAct = 1;
+
+	xmov = XHERO;
+	ymov = 505;
+	zmov = YHERO;
+
+	yrot = 150;
+
+	
+	return true
+end
+
+--This is our main program loop and will be called continuously until the program ends
+function App:Loop()
+	
+	--If window has been closed, end the program
+	if self.window:Closed() or self.window:KeyDown(Key.Escape) then return false end
+
+	for i = minnFrameVirt[curAct],maxxFrameVirt[curAct] do
+		App:LoaderGUI()
+		self.camera:SetPosition(xmov-yrot*math.cos(xrot),ymov + 40, zmov - yrot * math.sin(xrot)) --Ata
+		--agk::SetCameraLookAt(1, xmov, ymov, zmov, 0);	
+		--PointEntity()
+		CameraX = self.camera:GetPosition()[0] 
+		CameraY = self.camera:GetPosition()[1] 
+		CameraZ = self.camera:GetPosition()[2]
+		string.format("%f", i)
+		line = "xrot="..string.format("%f", xrot).."; yrot="..string.format("%f", yrot).."; ymov="..string.format("%f", ymov).."\n".."xcam="..string.format("%f", CameraX).."; ycam="..string.format("%f", CameraY).."; zcam="..string.format("%f", CameraZ)
+
+		self.context:DrawText(line, 0, 0)
+			
+		CurFrame = i
+
+		if (self.window:KeyHit(Key.Up))  then 
+			yrot=yrot-3
+		end
+
+		if (self.window:KeyHit(Key.Down)) then 
+			yrot=yrot+3
+		end
+
+		if (self.window:KeyHit(Key.Left)) then 
+			xrot=xrot-3
+		end
+
+		if (self.window:KeyHit(Key.Right)) then 
+			xrot=xrot+3
+		end
+
+		if (self.window:KeyHit(Key.Z)) then 
+			ymov=ymov-1		
+		end
+
+		if (self.window:KeyHit(Key.X)) then 
+			ymov=ymov+1		
+		end
+
+		-- rotate model
+		if (self.window:KeyHit(Key.Z)) then yrot1=yrot1-1		
+		end
+
+		if (self.window:KeyHit(Key.X)) then yrot1=yrot1+1
+		end
+		
+		--App:VirtAnimation1();
+
+		--Update the app timing
+		Time:Update()
+		
+		--Update the world
+		self.world:Update()
+		
+		--Render the world
+		self.world:Render()	
+
+		--Эта команда должна обязательно быть перед вызовом LoaderGUI
+		--Без неё текст будет отображаться неправильно
+		self.context:SetBlendMode(Blend.Alpha)
+
+		--Refresh the screen
+		self.context:Sync()
+	end
+	
+	--Returning true tells the main program to keep looping
+	return true
+end
+
+function App:LoaderGUI()
+	
+	self.context:DrawText("RCamL", 50,200)
+	self.context:DrawText("RCamR", self.window:GetWidth()-250, 200)
+	
+	self.context:DrawText("ZoomOut", 50,450)
+	self.context:DrawText("ZoomIn", self.window:GetWidth()-300, 450)
+	
+	self.context:DrawText("XX", 100, self.window:GetHeight()-100)
+	--self.context:DrawText(actNameVirt[curAct], 100, self.window:GetHeight()-100)
+	
+	-- Interaction
+	-- change act animation
+	if ( self.window:MouseX()>0 and 
+		self.window:MouseX()<310 and 
+		self.window:MouseY()>self.window:GetHeight()-100 and 
+		self.window:MouseDown(1))
+	then
+		Time:Delay(200)
+		curAct=curAct+1
+		if curAct>nnvirt then curAct=1 end
+	end
+
+	-- rotate camera left
+	if (self.window:MouseX()>0 and 
+		self.window:MouseX()<210 and 
+		self.window:MouseY()>190 and 
+		self.window:MouseY()<250 and 
+		self.window:MouseDown(1))
+	then
+		xrot=xrot-3
+	end
+	
+	-- rotate camera right
+	if (self.window:MouseX()>750 and 
+		self.window:MouseX()<1024 and 
+		self.window:MouseY()>190 and 
+		self.window:MouseY()<250 and 
+		self.window:MouseDown(1))
+	then
+		xrot=xrot+3
+	end
+	
+	-- zoom in camera
+	if (self.window:MouseX()>0 and 
+		self.window:MouseX()<270 and
+		self.window:MouseY()>440 and 
+		self.window:MouseY()<500 and 
+		self.window:MouseDown(1))
+	then
+		yrot = yrot+0.3
+	end
+
+	-- zoom out camera
+	if (self.window:MouseX()>710 and 
+		self.window:MouseX()<1024 and 
+		self.window:MouseY()>440 and 
+		self.window:MouseY()<500 and 
+		self.window:MouseDown(1))
+	then
+		yrot = yrot-0.3
+	end
+end
+
+function App:InitAnimationVirt()	
+        local path = "Data/animvirtdata.dat" 
+        local stream = FileSystem:OpenFile(path) 
+	local framn = 2
+        while(framn <= 1136) do
+		for limbn=1,20 do 
+			virtxpos[(framn-1)*20 + limbn] = tonumber(stream:ReadLine())
+			virtypos[(framn-1)*20 + limbn] = tonumber(stream:ReadLine())
+			virtzpos[(framn-1)*20 + limbn] = tonumber(stream:ReadLine())
+			virtwquat[(framn-1)*20 + limbn] = tonumber(stream:ReadLine())
+			virtxquat[(framn-1)*20 + limbn] = tonumber(stream:ReadLine()) 
+			virtyquat[(framn-1)*20 + limbn] = tonumber(stream:ReadLine())
+			virtzquat[(framn-1)*20 + limbn] = tonumber(stream:ReadLine())
+		end
+		framn = framn + 1
+        end
+	stream:Release()
+end
+
+function App:VirtAnimation1()
+	for i=1,18 do
+		qw = virtwquat[i][CurFrame]
+		qx = virtxquat[i][CurFrame]
+		qy = virtyquat[i][CurFrame]
+		qz = virtzquat[i][CurFrame]
+		lpxx = virtxpos[i][CurFrame]
+		lpyy = virtypos[i][CurFrame]
+		lpzz = virtzpos[i][CurFrame]
+		setScale = 15
+		quat = Quat(qx, qy, qz, qw)
+		models[i]:SetQuaternion(quat, false)
+		diagg = math:sqrt(lpxx*lpxx + lpzz*lpzz)
+		angg = acos1(lpxx, 0, lpzz, 0)
+		models[i]:SetPosition(setScale*diagg*math:sin(angg+yrot1)+xmov, setScale*lpyy+ymov, setScale*diagg*math:cos(angg+yrot1)+zmov)
+		xrott = models[i]:GetRotation()[0] + xrot1
+		yrott = models[i]:GetRotation()[1] + yrot1
+		zrott = models[i]:GetRotation()[2] + zrot1
+		models[i]:SetRotation(xrott, yrott, zrott)
+		models[i]:SetScale(setScale, setScale, setScale)
+	end
+end
+
+function App:InitAnimSummaryVirt()
+
+	minnFrameVirt[1]=3
+	maxxFrameVirt[1]=32
+	actNameVirt[1]="virtrun"
+	minnFrameVirt[2]=41
+	maxxFrameVirt[2]=81
+	actNameVirt[2]="virtmove"
+	minnFrameVirt[3]=82
+	maxxFrameVirt[3]=142
+	actNameVirt[3]="virtputitem"
+	minnFrameVirt[4]=143
+	maxxFrameVirt[4]=203
+	actNameVirt[4]="virtcrawl"
+	minnFrameVirt[5]=204
+	maxxFrameVirt[5]=264
+	actNameVirt[5]="virtsitsurrender"
+	minnFrameVirt[6]=265
+	maxxFrameVirt[6]=355
+	actNameVirt[6]="virtsitfall"
+	minnFrameVirt[7]=356
+	maxxFrameVirt[7]=446
+	actNameVirt[7]="virtupfall"
+	minnFrameVirt[8]=447
+	maxxFrameVirt[8]=487
+	actNameVirt[8]="virtstepright"
+	minnFrameVirt[9]=488
+	maxxFrameVirt[9]=538
+	actNameVirt[9]="virtstepleft"
+	minnFrameVirt[10]=539
+	maxxFrameVirt[10]=609
+	actNameVirt[10]="virtcheckright"
+	minnFrameVirt[11]=610
+	maxxFrameVirt[11]=660
+	actNameVirt[11]="virtcheckleft"
+	minnFrameVirt[12]=661
+	maxxFrameVirt[12]=791
+	actNameVirt[12]="virthack"
+	minnFrameVirt[13]=792
+	maxxFrameVirt[13]=912
+	actNameVirt[13]="virtscan"
+	minnFrameVirt[14]=913
+	maxxFrameVirt[14]=963
+	actNameVirt[14]="virtkick"
+	minnFrameVirt[15]=964
+	maxxFrameVirt[15]=1064
+	actNameVirt[15]="virtraskolbas"
+	minnFrameVirt[16]=1065
+	maxxFrameVirt[16]=1125
+	actNameVirt[16]="virtstaystill"
+	minnFrameVirt[17]=1126
+	maxxFrameVirt[17]=1166
+	actNameVirt[17]="virtsitstill"
+end
+
+function App:acos1(x11, x22, y11, y22)
+
+	local coef = 0
+	
+	-- REFERENCE FUCTIONS FOR ANGLE
+	local asn = math:asin((x11 - x22)/math:sqrt((x11 - x22)*(x11 - x22) + (y11 - y22)*(y11 - y22)))
+	local acs = math:acos((y11 - y22)/math:sqrt((x11 - x22)*(x11 - x22) + (y11 - y22)*(y11 - y22)))
+	
+	if (asn < 0)
+	then
+		coef = 360 - acs
+	else
+		coef = acs
+	end
+
+	return coef
+end
